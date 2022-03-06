@@ -1,0 +1,63 @@
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.ClientMapper">
+
+    <resultMap id="clientResultMap" type="com.example.demo.model.Client" >
+        <id property="clientId" column="client_id" />
+        <result property="name" column="name"/>
+        <result property="address" column="address"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <association property="manager" column="manager_id" resultMap="managerResultMap"/>
+    </resultMap>
+
+    <resultMap id="managerResultMap" type="com.example.demo.model.Manager">
+        <id property="managerId" column="manager_id" />
+        <result property="lastName" column="last_name"/>
+        <result property="firstName" column="first_name"/>
+        <result property="middleName" column="middle_name"/>
+        <result property="telephone" column="telephone"/>
+        <association property="alternate" column="alternate_id" fetchType="eager" select="getAlternateById"/>
+    </resultMap>
+
+    <select id="getClientById" resultMap="clientResultMap" resultType="com.example.demo.model.Client">
+        select  *
+        from    client c
+        join    manager m on m.manager_id = c.manager_id
+        where   client_id = #{clientId} and is_deleted is not true
+    </select>
+
+    <select id="getClients" resultMap="clientResultMap" resultType="com.example.demo.model.Client">
+        select  *
+        from    client c
+        join    manager m on m.manager_id = c.manager_id
+        where   is_deleted is not true
+    </select>
+
+    <select id="getAlternateById" parameterType="java.lang.Integer" resultMap="managerResultMap">
+        select * from manager where manager_id = #{managerId}
+    </select>
+
+    <select id="getClientByManager" resultMap="clientResultMap" >
+        select  * from client where manager_id = #{managerId}
+    </select>
+
+    <insert id="insertClient">
+        insert into client (client_id, name, address, manager_id)
+        values (#{clientId} ,#{name}, #{address}, #{manager.managerId})
+    </insert>
+
+    <update id="updateClient">
+        update  client  set name = #{name}, address = #{address}
+        where   client_id = #{clientId}
+    </update>
+
+    <update id="updateClientManager">
+        update  client  set manager_id = #{manager.alternate}
+        where   client_id = #{clientId}
+    </update>
+
+    <update id="deleteClient" >
+        update  client set is_deleted = true
+        where   client_id = #{clientId}
+    </update>
+</mapper>

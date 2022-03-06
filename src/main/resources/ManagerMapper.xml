@@ -1,0 +1,53 @@
+<!DOCTYPE mapper     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.ManagerMapper">
+
+    <resultMap id="managerResultMap" type="com.example.demo.model.Manager">
+        <id property="managerId" column="manager_id" />
+        <result property="lastName" column="last_name"/>
+        <result property="firstName" column="first_name"/>
+        <result property="middleName" column="middle_name"/>
+        <result property="telephone" column="telephone"/>
+        <association property="alternate" column="alternate_id" fetchType="eager" select="getAlternateById"/>
+        <collection property="clients" ofType="com.example.demo.model.Client" resultMap="clientResultMap"/>
+    </resultMap>
+
+    <resultMap id="clientResultMap" type="com.example.demo.model.ClientStats" >
+        <id property="clientId" column="client_id" />
+        <result property="name" column="name"/>
+    </resultMap>
+
+    <select id="getManagerById" resultMap="managerResultMap">
+        select      *
+        from        manager m
+        left join   client c on c.manager_id = m.manager_id
+        where       m.manager_id = #{managerId} and is_deleted is not true
+    </select>
+
+    <select id="getManagers" resultMap="managerResultMap" >
+        select * from manager
+    </select>
+
+    <select id="getManagersByAlternate" resultMap="managerResultMap" >
+        select * from manager where alternate_id = #{managerId}
+    </select>
+
+    <select id="getAlternateById" resultMap="managerResultMap">
+        select * from manager where manager_id = #{managerId}
+    </select>
+
+    <insert id="insertManager">
+        insert into manager (manager_id, last_name, first_name, middle_name, telephone, alternate_id)
+        values (#{managerId}, #{lastName}, #{firstName}, #{middleName}, #{telephone}, #{alternate.managerId})
+    </insert>
+
+    <update id="updateManager">
+        update  manager set
+        last_name = #{lastName}, first_name = #{firstName}, middle_name = #{middleName},
+        telephone = #{telephone}, alternate_id = #{alternate.managerId}
+        where   manager_id = #{managerId}
+    </update>
+
+    <delete id="deleteManager">
+        delete from manager where manager_id = #{managerId}
+    </delete>
+</mapper>
