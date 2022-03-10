@@ -11,7 +11,7 @@
         <collection property="clients" ofType="com.example.demo.model.Client" resultMap="clientResultMap"/>
     </resultMap>
 
-    <resultMap id="clientResultMap" type="com.example.demo.model.ClientStats" >
+    <resultMap id="clientResultMap" type="com.example.demo.model.Client" >
         <id property="clientId" column="client_id" />
         <result property="name" column="name"/>
     </resultMap>
@@ -19,8 +19,7 @@
     <select id="getManagerById" resultMap="managerResultMap">
         select      *
         from        manager m
-        left join   client c on c.manager_id = m.manager_id
-        where       m.manager_id = #{managerId} and is_deleted is not true
+        where       m.manager_id = #{managerId}
     </select>
 
     <select id="getManagers" resultMap="managerResultMap" >
@@ -33,6 +32,13 @@
 
     <select id="getAlternateById" resultMap="managerResultMap">
         select * from manager where manager_id = #{managerId}
+    </select>
+
+    <select id="getClients" resultMap="clientResultMap" resultType="com.example.demo.model.Client">
+        select  client_id, name
+        from    client c
+        join    manager m on m.manager_id = c.manager_id
+        where   c.manager_id = #{managerId} and is_deleted is not true
     </select>
 
     <insert id="insertManager">

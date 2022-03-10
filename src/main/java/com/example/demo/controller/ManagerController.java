@@ -38,13 +38,16 @@ public class ManagerController extends ModelController {
         try {
             if (id != null) {
                 Manager manager = managerMapper.getManagerById(id);
+                assert manager != null;
+                manager.setClients(managerMapper.getClients(id));
                 return new ResponseEntity<>(manager, new HttpHeaders(), HttpStatus.OK);
             }
-            return new ResponseEntity<>(managerMapper.getManagers(), getHttpHeaders(), HttpStatus.OK);
+            List<Manager> managers = managerMapper.getManagers();
+            assert !managers.isEmpty();
+            return new ResponseEntity<>(managers, getHttpHeaders(), HttpStatus.OK);
         } catch (Exception exception) {
             logger.error(exception.getMessage());
         }
-
         return ResponseEntity.notFound().build();
     }
 

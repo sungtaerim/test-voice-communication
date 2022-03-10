@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping({"/client"})
 public class ClientController extends ModelController {
@@ -29,10 +31,12 @@ public class ClientController extends ModelController {
         try {
             if (id != null) {
                 Client client = clientMapper.getClientById(id);
+                assert client != null;
                 return new ResponseEntity<>(client, new HttpHeaders(), HttpStatus.OK);
             }
-
-            return new ResponseEntity<>(clientMapper.getClients(), new HttpHeaders(), HttpStatus.OK);
+            List<Client> clientList = clientMapper.getClients();
+            assert !clientList.isEmpty();
+            return new ResponseEntity<>(clientList, new HttpHeaders(), HttpStatus.OK);
         } catch (Exception exception) {
             logger.error(exception.getMessage());
         }
