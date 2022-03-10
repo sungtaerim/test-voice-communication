@@ -1,10 +1,10 @@
 package com.example.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@Builder(toBuilder = true)
 public class Client {
 
     private int clientId;

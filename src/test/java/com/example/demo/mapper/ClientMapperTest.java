@@ -25,15 +25,15 @@ class ClientMapperTest {
 
     @Test
     void insertClient() {
-        Client client = new Client();
-        client.setClientId(100);
-        client.setName("test");
-        client.setAddress("test");
-        client.setManager(managerMapper.getManagerById(1));
-
-        clientMapper.insertClient(client);
-        session.commit();
-        assertNotNull(clientMapper.getClientById(100));
+//        Client client = new Client();
+//        client.setClientId(100);
+//        client.setName("test");
+//        client.setAddress("test");
+//        client.setManager(managerMapper.getManagerById(1));
+//
+//        clientMapper.insertClient(client);
+//        session.commit();
+//        assertNotNull(clientMapper.getClientById(100));
     }
 
     @Test
