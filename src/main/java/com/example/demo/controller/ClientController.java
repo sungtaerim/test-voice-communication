@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.dao.ClientDAO;
-import com.example.demo.model.Client;
+import com.example.demo.dto.ClientDTO;
+import com.example.demo.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping({"/client"})
 public class ClientController {
 
-    private ClientDAO clientDAO;
+    private ClientService clientService;
 
     @Autowired
-    public ClientController(ClientDAO clientDAO) {
-        this.clientDAO = clientDAO;
+    public ClientController(ClientService clientService) {
+        this.clientService = clientService;
     }
 
     /**
@@ -26,7 +26,7 @@ public class ClientController {
      * */
     @GetMapping({"/get/{id}"})
     public ResponseEntity<?> getClientById(@PathVariable Integer id) throws Exception {
-        return new ResponseEntity<>(clientDAO.getClientById(id), new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<>(clientService.getById(id), new HttpHeaders(), HttpStatus.OK);
     }
 
     /**
@@ -35,27 +35,29 @@ public class ClientController {
      * */
     @GetMapping({"/get"})
     public ResponseEntity<?> getClients() throws Exception {
-        return new ResponseEntity<>(clientDAO.getClients(), new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<>(clientService.getList(), new HttpHeaders(), HttpStatus.OK);
     }
 
     /**
      * POST request to add a new Client entity to the database
-     * @param client Client entity
+     * @param clientDTO Client entity
      * @return Returns ResponseEntity with code 200 if successful, 404 otherwise
      * */
     @PostMapping({"/insert"})
-    public ResponseEntity<?> insertClient(@RequestBody Client client) {
-        return clientDAO.insert(client);
+    public ResponseEntity<?> insertClient(@RequestBody ClientDTO clientDTO) {
+        clientService.insert(clientDTO);
+        return ResponseEntity.ok().build();
     }
 
     /**
      * POST request to to update a Client entity to the database
-     * @param client Client entity
+     * @param clientDTO Client entity
      * @return Returns ResponseEntity with code 200 if successful, 404 otherwise
      * */
     @PostMapping({"/update"})
-    public ResponseEntity<?> updateCLinet(@RequestBody Client client) {
-        return clientDAO.update(client);
+    public ResponseEntity<?> updateCLinet(@RequestBody ClientDTO clientDTO) {
+        clientService.update(clientDTO);
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -65,6 +67,7 @@ public class ClientController {
      * */
     @DeleteMapping({"/delete"})
     public ResponseEntity<?> deleteClient(@RequestParam Integer id) {
-        return clientDAO.delete(id);
+        clientService.delete(id);
+        return ResponseEntity.ok().build();
     }
 }
